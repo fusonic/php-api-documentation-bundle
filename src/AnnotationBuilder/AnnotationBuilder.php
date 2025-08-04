@@ -166,7 +166,7 @@ final class AnnotationBuilder
             $inputClassBasename = (new \ReflectionClass($input))->getShortName();
             $propertyInfoProperties = $this->propertyExtractor->extractClassProperties($input);
 
-            if (null !== $propertyInfoProperties && \count($propertyInfoProperties) > 0) {
+            if ([] !== $propertyInfoProperties) {
                 return new OA\Parameter([
                     'name' => $inputClassBasename,
                     'in' => 'query',

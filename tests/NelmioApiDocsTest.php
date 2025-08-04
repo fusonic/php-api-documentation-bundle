@@ -56,6 +56,8 @@ final class NelmioApiDocsTest extends WebTestCase
         $this->verifyManualCollectionOutputRoute('/test-manual-collection-output/{id}', $content);
         $this->verifyIgnoredReturnType('/test-ignored-return-type', $content);
         $this->verifyVoidReturnType('/test-void-return-type', $content);
+        $this->verifyInputWithIgnoredProperty('/test-input-with-ignored-property/{id}', $content);
+        $this->verifyInputWithIgnoredPropertyOnly('/test-input-with-ignored-property-only/{id}', $content);
 
         self::assertArrayHasKey('components', $content);
         self::assertSame([
@@ -78,6 +80,17 @@ final class NelmioApiDocsTest extends WebTestCase
                     'properties' => [
                         'id' => [
                             'type' => 'integer',
+                        ],
+                    ],
+                    'type' => 'object',
+                ],
+                'TestRequestWithIgnoredProperty' => [
+                    'required' => [
+                        'email',
+                    ],
+                    'properties' => [
+                        'email' => [
+                            'type' => 'string',
                         ],
                     ],
                     'type' => 'object',
@@ -320,18 +333,18 @@ final class NelmioApiDocsTest extends WebTestCase
     /**
      * @param array<string, mixed> $content
      */
-    private function verifyTestRequestObjectQuery(string $path, array $content): void
+    private function verifyTestRequestObjectQuery(string $path, array $content, string $class = 'TestRequest'): void
     {
         self::assertArrayHasKey('get', $content['paths'][$path]);
         self::assertArrayHasKey('parameters', $content['paths'][$path]['get']);
         self::assertCount(2, $content['paths'][$path]['get']['parameters']);
 
         self::assertSame([
-            'name' => 'TestRequest',
+            'name' => $class,
             'in' => 'query',
             'explode' => true,
             'schema' => [
-                '$ref' => '#/components/schemas/TestRequest',
+                '$ref' => \sprintf('#/components/schemas/%s', $class),
             ],
         ], $content['paths'][$path]['get']['parameters'][0]);
 
@@ -435,5 +448,32 @@ final class NelmioApiDocsTest extends WebTestCase
                 'description' => 'Object was not found.',
             ],
         ], $content['paths'][$path]['post']['responses']);
+    }
+
+    /**
+     * @param array<string, mixed> $content
+     */
+    private function verifyInputWithIgnoredProperty(string $path, array $content): void
+    {
+        $this->verifyTestRequestObjectQuery($path, $content, class: 'TestRequestWithIgnoredProperty');
+    }
+
+    /**
+     * @param array<string, mixed> $content
+     */
+    private function verifyInputWithIgnoredPropertyOnly(string $path, array $content): void
+    {
+        self::assertArrayHasKey('get', $content['paths'][$path]);
+        self::assertArrayHasKey('parameters', $content['paths'][$path]['get']);
+        self::assertCount(1, $content['paths'][$path]['get']['parameters']);
+
+        self::assertSame([
+            'name' => 'id',
+            'in' => 'path',
+            'required' => true,
+            'schema' => [
+                'type' => 'string',
+            ],
+        ], $content['paths'][$path]['get']['parameters'][0]);
     }
 }
