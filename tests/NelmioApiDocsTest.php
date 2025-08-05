@@ -56,8 +56,10 @@ final class NelmioApiDocsTest extends WebTestCase
         $this->verifyManualCollectionOutputRoute('/test-manual-collection-output/{id}', $content);
         $this->verifyIgnoredReturnType('/test-ignored-return-type', $content);
         $this->verifyVoidReturnType('/test-void-return-type', $content);
-        $this->verifyInputWithIgnoredProperty('/test-input-with-ignored-property/{id}', $content);
-        $this->verifyInputWithIgnoredPropertyOnly('/test-input-with-ignored-property-only/{id}', $content);
+        $this->verifyGetInputWithIgnoredProperty('/test-get-input-with-ignored-property/{id}', $content);
+        $this->verifyGetInputWithIgnoredPropertyOnly('/test-get-input-with-ignored-property-only/{id}', $content);
+        $this->verifyPostInputWithIgnoredProperty('/test-post-input-with-ignored-property/{id}', $content);
+        $this->verifyPostInputWithIgnoredPropertyOnly('/test-post-input-with-ignored-property-only/{id}', $content);
 
         self::assertArrayHasKey('components', $content);
         self::assertSame([
@@ -361,7 +363,7 @@ final class NelmioApiDocsTest extends WebTestCase
     /**
      * @param array<string, mixed> $content
      */
-    private function verifyTestRequestObjectBody(string $path, array $content): void
+    private function verifyTestRequestObjectBody(string $path, array $content, string $class = 'TestRequest'): void
     {
         self::assertArrayHasKey('post', $content['paths'][$path]);
         self::assertArrayHasKey('parameters', $content['paths'][$path]['post']);
@@ -384,7 +386,7 @@ final class NelmioApiDocsTest extends WebTestCase
                 'content' => [
                     'application/json' => [
                         'schema' => [
-                            '$ref' => '#/components/schemas/TestRequest',
+                            '$ref' => \sprintf('#/components/schemas/%s', $class),
                         ],
                     ],
                 ],
@@ -453,7 +455,7 @@ final class NelmioApiDocsTest extends WebTestCase
     /**
      * @param array<string, mixed> $content
      */
-    private function verifyInputWithIgnoredProperty(string $path, array $content): void
+    private function verifyGetInputWithIgnoredProperty(string $path, array $content): void
     {
         $this->verifyTestRequestObjectQuery($path, $content, class: 'TestRequestWithIgnoredProperty');
     }
@@ -461,7 +463,7 @@ final class NelmioApiDocsTest extends WebTestCase
     /**
      * @param array<string, mixed> $content
      */
-    private function verifyInputWithIgnoredPropertyOnly(string $path, array $content): void
+    private function verifyGetInputWithIgnoredPropertyOnly(string $path, array $content): void
     {
         self::assertArrayHasKey('get', $content['paths'][$path]);
         self::assertArrayHasKey('parameters', $content['paths'][$path]['get']);
@@ -475,5 +477,33 @@ final class NelmioApiDocsTest extends WebTestCase
                 'type' => 'string',
             ],
         ], $content['paths'][$path]['get']['parameters'][0]);
+    }
+
+    /**
+     * @param array<string, mixed> $content
+     */
+    private function verifyPostInputWithIgnoredProperty(string $path, array $content): void
+    {
+        $this->verifyTestRequestObjectBody($path, $content, class: 'TestRequestWithIgnoredProperty');
+    }
+
+    /**
+     * @param array<string, mixed> $content
+     */
+    private function verifyPostInputWithIgnoredPropertyOnly(string $path, array $content): void
+    {
+        self::assertArrayHasKey('post', $content['paths'][$path]);
+        self::assertArrayHasKey('parameters', $content['paths'][$path]['post']);
+        self::assertCount(1, $content['paths'][$path]['post']['parameters']);
+        self::assertSame([
+            'name' => 'id',
+            'in' => 'path',
+            'required' => true,
+            'schema' => [
+                'type' => 'string',
+            ],
+        ], $content['paths'][$path]['post']['parameters'][0]);
+
+        self::assertArrayNotHasKey('requestBody', $content['paths'][$path]['post']);
     }
 }

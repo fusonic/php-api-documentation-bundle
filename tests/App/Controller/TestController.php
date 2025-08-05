@@ -95,13 +95,23 @@ final class TestController extends AbstractController
     {
     }
 
-    #[DocumentedRoute(path: '/test-input-with-ignored-property/{id}', methods: ['GET'])]
-    public function testInputWithIgnoredProperty(#[FromRequest] TestRequestWithIgnoredProperty $query): void
+    #[DocumentedRoute(path: '/test-get-input-with-ignored-property/{id}', methods: ['GET'])]
+    public function testGetInputWithIgnoredProperty(#[FromRequest] TestRequestWithIgnoredProperty $query): void
     {
     }
 
-    #[DocumentedRoute(path: '/test-input-with-ignored-property-only/{id}', methods: ['GET'])]
-    public function testInputWithIgnoredPropertyOnly(#[FromRequest] TestRequestWithIgnoredPropertyOnly $query): void
+    #[DocumentedRoute(path: '/test-get-input-with-ignored-property-only/{id}', methods: ['GET'])]
+    public function testGetInputWithIgnoredPropertyOnly(#[FromRequest] TestRequestWithIgnoredPropertyOnly $query): void
+    {
+    }
+
+    #[DocumentedRoute(path: '/test-post-input-with-ignored-property/{id}', methods: ['POST'])]
+    public function testPostInputWithIgnoredProperty(#[FromRequest] TestRequestWithIgnoredProperty $query): void
+    {
+    }
+
+    #[DocumentedRoute(path: '/test-post-input-with-ignored-property-only/{id}', methods: ['POST'])]
+    public function testPostInputWithIgnoredPropertyOnly(#[FromRequest] TestRequestWithIgnoredPropertyOnly $query): void
     {
     }
 }
