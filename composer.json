@@ -24,19 +24,19 @@
         ]
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^3.58",
-        "infection/infection": "^0.29",
-        "phpstan/phpstan": "^1.11",
-        "phpstan/phpstan-deprecation-rules": "^1.2",
-        "phpstan/phpstan-phpunit": "^1.4",
-        "phpstan/phpstan-strict-rules": "^1.6",
-        "phpstan/phpstan-symfony": "^1.4",
-        "phpunit/phpunit": "^11.2",
+        "friendsofphp/php-cs-fixer": "^3.85",
+        "infection/infection": "^0.31",
+        "phpstan/phpstan": "^2.1",
+        "phpstan/phpstan-deprecation-rules": "^2.0",
+        "phpstan/phpstan-phpunit": "^2.0",
+        "phpstan/phpstan-strict-rules": "^2.0",
+        "phpstan/phpstan-symfony": "^2.0",
+        "phpunit/phpunit": "^12.3",
         "symfony/serializer": "^6.4 || ^7.0",
         "symfony/framework-bundle": "^6.4 || ^7.0",
         "symfony/test-pack": "^1.0",
         "symfony/yaml": "^6.4 || ^7.0",
-        "tomasvotruba/type-coverage": "^0.3"
+        "tomasvotruba/type-coverage": "^2.0"
     },
     "require": {
         "php": ">=8.2",
